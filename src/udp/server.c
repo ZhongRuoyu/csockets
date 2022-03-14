@@ -58,9 +58,12 @@ int main(int argc, char **argv) {
         freeaddrinfo(addr_info_head);
         exit(EXIT_FAILURE);
     }
+    char addr_ip[INET6_ADDRSTRLEN];
+    inet_ntop(addr_info->ai_family, get_in_addr(addr_info->ai_addr), addr_ip,
+              sizeof addr_ip);
     freeaddrinfo(addr_info_head);
 
-    printf("listening for incoming messages...\n");
+    printf("listening for incoming messages at %s port %s...\n", addr_ip, port);
 
     for (;;) {
         char buffer[BUFFER_LENGTH];
