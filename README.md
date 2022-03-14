@@ -14,6 +14,10 @@ This is a collection of socket programming implementations in C. The implementat
 - [UDP server](src/udp/server.c)
 - [UDP client](src/udp/client.c)
 
+### Utilities
+
+- [Hostname to IP address](src/ip/getip.c)
+
 ## References
 
 The implementations in this repository are made possible thanks to the inspiration from [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/).
