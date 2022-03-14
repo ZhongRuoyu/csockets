@@ -154,6 +154,9 @@ int main(int argc, char **argv) {
             printf("%s\n", buffer);
 
             close(connection);
+
+            printf("closed connection to %s port %d\n", from_addr_ip,
+                   from_addr_port);
             exit(EXIT_SUCCESS);
         } else {
             close(connection);
