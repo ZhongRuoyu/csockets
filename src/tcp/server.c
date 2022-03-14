@@ -11,7 +11,7 @@
 #define BUFFER_LENGTH 65536
 #define BACKLOG SOMAXCONN
 
-void *get_in_addr(const struct sockaddr *addr) {
+const void *get_in_addr(const struct sockaddr *addr) {
     if (addr->sa_family == AF_INET) {
         return &(((const struct sockaddr_in *)addr)->sin_addr);
     }

@@ -9,13 +9,6 @@
 
 #define BUFFER_LENGTH 65536
 
-void *get_in_addr(const struct sockaddr *addr) {
-    if (addr->sa_family == AF_INET) {
-        return &(((const struct sockaddr_in *)addr)->sin_addr);
-    }
-    return &(((const struct sockaddr_in6 *)addr)->sin6_addr);
-}
-
 int main(int argc, char **argv) {
     if (argc != 4) {
         fprintf(stderr, "Usage: %s <hostname> <port> <message>\n", argv[0]);
