@@ -70,7 +70,8 @@ int main(int argc, char **argv) {
         close(s);
         exit(EXIT_FAILURE);
     }
-    printf("sent %d bytes to %s:\n", bytes_sent, hostname);
+    printf("sent %d bytes to %s (%s) port %s:\n", bytes_sent, hostname, addr_ip,
+           port);
     printf("%s\n", message);
 
     char buffer[BUFFER_LENGTH];
@@ -81,7 +82,8 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     buffer[bytes_received] = '\0';
-    printf("received %d bytes from %s:\n", bytes_received, hostname);
+    printf("received %d bytes from %s (%s) port %s:\n", bytes_received,
+           hostname, addr_ip, port);
     printf("%s\n", buffer);
 
     close(s);

@@ -17,6 +17,13 @@ const void *get_in_addr(const struct sockaddr *addr) {
     return &(((const struct sockaddr_in6 *)addr)->sin6_addr);
 }
 
+in_port_t get_in_port(const struct sockaddr *addr) {
+    if (addr->sa_family == AF_INET) {
+        return ntohs(((const struct sockaddr_in *)addr)->sin_port);
+    }
+    return ntohs(((const struct sockaddr_in6 *)addr)->sin6_port);
+}
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <port>\n", argv[0]);
@@ -83,7 +90,10 @@ int main(int argc, char **argv) {
         inet_ntop(from_addr.ss_family,
                   get_in_addr((const struct sockaddr *)&from_addr),
                   from_addr_ip, sizeof from_addr_ip);
-        printf("received %d bytes from %s:\n", bytes_received, from_addr_ip);
+        in_port_t from_addr_port =
+            get_in_port((const struct sockaddr *)&from_addr);
+        printf("received %d bytes from %s port %d:\n", bytes_received,
+               from_addr_ip, from_addr_port);
         printf("%s\n", buffer);
     }
 
