@@ -1,6 +1,8 @@
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +12,14 @@
 
 #define BUFFER_LENGTH 65536
 #define BACKLOG SOMAXCONN
+
+void sigchld_handler(int arg) {
+    int saved_errno = errno;
+    while (waitpid(-1, NULL, WNOHANG) > 0) {
+        continue;
+    }
+    errno = saved_errno;
+}
 
 const void *get_in_addr(const struct sockaddr *addr) {
     if (addr->sa_family == AF_INET) {
@@ -71,6 +81,15 @@ int main(int argc, char **argv) {
     }
     freeaddrinfo(addr_info_head);
 
+    struct sigaction action = {.sa_handler = sigchld_handler,
+                               .sa_flags = SA_RESTART};
+    sigemptyset(&action.sa_mask);
+    if (sigaction(SIGCHLD, &action, NULL) == -1) {
+        perror("failed to set up signal handler");
+        close(s);
+        exit(EXIT_FAILURE);
+    }
+
     if (listen(s, BACKLOG) == -1) {
         perror("failed to listen");
         close(s);
@@ -95,28 +114,38 @@ int main(int argc, char **argv) {
                   from_addr_ip, sizeof from_addr_ip);
         printf("got connection from %s\n", from_addr_ip);
 
-        char buffer[BUFFER_LENGTH];
-        int bytes_received = recv(connection, buffer, sizeof buffer - 1, 0);
-        if (bytes_received == -1) {
-            perror("failed to receive message");
-            close(connection);
-            continue;
-        }
-        buffer[bytes_received] = '\0';
-        printf("received %d bytes from %s:\n", bytes_received, from_addr_ip);
-        printf("%s\n", buffer);
+        if (!fork()) {
+            close(s);
 
-        int bytes_sent = send(connection, buffer, bytes_received, 0);
-        if (bytes_sent == -1) {
-            perror("failed to send message");
-            close(connection);
-            continue;
-        }
-        printf("sent %d bytes to %s:\n", bytes_sent, from_addr_ip);
-        printf("%s\n", buffer);
+            char buffer[BUFFER_LENGTH];
+            int bytes_received = recv(connection, buffer, sizeof buffer - 1, 0);
+            if (bytes_received == -1) {
+                perror("failed to receive message");
+                close(connection);
+                exit(EXIT_FAILURE);
+            }
+            buffer[bytes_received] = '\0';
+            printf("received %d bytes from %s:\n", bytes_received,
+                   from_addr_ip);
+            printf("%s\n", buffer);
 
-        close(connection);
+            int bytes_sent = send(connection, buffer, bytes_received, 0);
+            if (bytes_sent == -1) {
+                perror("failed to send message");
+                close(connection);
+                exit(EXIT_FAILURE);
+            }
+            printf("sent %d bytes to %s:\n", bytes_sent, from_addr_ip);
+            printf("%s\n", buffer);
+
+            close(connection);
+            exit(EXIT_SUCCESS);
+        } else {
+            close(connection);
+        }
     }
+
+    close(s);
 
     return 0;
 }
