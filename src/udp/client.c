@@ -53,16 +53,16 @@ int main(int argc, char **argv) {
     inet_ntop(addr_info->ai_family, get_in_addr(addr_info->ai_addr), addr_ip,
               sizeof addr_ip);
 
-    int bytes_sent = sendto(s, message, strlen(message), 0, addr_info->ai_addr,
-                            addr_info->ai_addrlen);
+    ssize_t bytes_sent = sendto(s, message, strlen(message), 0,
+                                addr_info->ai_addr, addr_info->ai_addrlen);
     if (bytes_sent == -1) {
         perror("failed to send message");
         freeaddrinfo(addr_info_head);
         close(s);
         exit(EXIT_FAILURE);
     }
-    printf("sent %d bytes to %s (%s) port %s:\n", bytes_sent, hostname, addr_ip,
-           port);
+    printf("sent %zd bytes to %s (%s) port %s:\n", bytes_sent, hostname,
+           addr_ip, port);
     printf("%s\n", message);
 
     freeaddrinfo(addr_info_head);

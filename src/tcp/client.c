@@ -64,25 +64,25 @@ int main(int argc, char **argv) {
 
     printf("connected to %s (%s) port %s\n", hostname, addr_ip, port);
 
-    int bytes_sent = send(s, message, strlen(message), 0);
+    ssize_t bytes_sent = send(s, message, strlen(message), 0);
     if (bytes_sent == -1) {
         perror("failed to send message");
         close(s);
         exit(EXIT_FAILURE);
     }
-    printf("sent %d bytes to %s (%s) port %s:\n", bytes_sent, hostname, addr_ip,
+    printf("sent %zd bytes to %s (%s) port %s:\n", bytes_sent, hostname, addr_ip,
            port);
     printf("%s\n", message);
 
     char buffer[BUFFER_LENGTH];
-    int bytes_received = recv(s, buffer, sizeof buffer - 1, 0);
+    ssize_t bytes_received = recv(s, buffer, sizeof buffer - 1, 0);
     if (bytes_received == -1) {
         perror("failed to receive message");
         close(s);
         exit(EXIT_FAILURE);
     }
     buffer[bytes_received] = '\0';
-    printf("received %d bytes from %s (%s) port %s:\n", bytes_received,
+    printf("received %zd bytes from %s (%s) port %s:\n", bytes_received,
            hostname, addr_ip, port);
     printf("%s\n", buffer);
 

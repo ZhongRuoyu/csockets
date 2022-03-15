@@ -132,24 +132,25 @@ int main(int argc, char **argv) {
             close(s);
 
             char buffer[BUFFER_LENGTH];
-            int bytes_received = recv(connection, buffer, sizeof buffer - 1, 0);
+            ssize_t bytes_received =
+                recv(connection, buffer, sizeof buffer - 1, 0);
             if (bytes_received == -1) {
                 perror("failed to receive message");
                 close(connection);
                 exit(EXIT_FAILURE);
             }
             buffer[bytes_received] = '\0';
-            printf("received %d bytes from %s port %d:\n", bytes_received,
+            printf("received %zd bytes from %s port %d:\n", bytes_received,
                    from_addr_ip, from_addr_port);
             printf("%s\n", buffer);
 
-            int bytes_sent = send(connection, buffer, bytes_received, 0);
+            ssize_t bytes_sent = send(connection, buffer, bytes_received, 0);
             if (bytes_sent == -1) {
                 perror("failed to send message");
                 close(connection);
                 exit(EXIT_FAILURE);
             }
-            printf("sent %d bytes to %s port %d:\n", bytes_sent, from_addr_ip,
+            printf("sent %zd bytes to %s port %d:\n", bytes_sent, from_addr_ip,
                    from_addr_port);
             printf("%s\n", buffer);
 

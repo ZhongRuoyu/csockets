@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
         struct sockaddr_storage from_addr;
         socklen_t from_addr_len = sizeof from_addr;
 
-        int bytes_received =
+        ssize_t bytes_received =
             recvfrom(s, buffer, sizeof buffer - 1, 0,
                      (struct sockaddr *)&from_addr, &from_addr_len);
         if (bytes_received == -1) {
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
                   from_addr_ip, sizeof from_addr_ip);
         in_port_t from_addr_port =
             get_in_port((const struct sockaddr *)&from_addr);
-        printf("received %d bytes from %s port %d:\n", bytes_received,
+        printf("received %zd bytes from %s port %d:\n", bytes_received,
                from_addr_ip, from_addr_port);
         printf("%s\n", buffer);
     }
