@@ -70,8 +70,8 @@ int main(int argc, char **argv) {
         close(s);
         exit(EXIT_FAILURE);
     }
-    printf("sent %zd bytes to %s (%s) port %s:\n", bytes_sent, hostname, addr_ip,
-           port);
+    printf("sent %zd bytes to %s (%s) port %s:\n", bytes_sent, hostname,
+           addr_ip, port);
     printf("%s\n", message);
 
     char buffer[BUFFER_LENGTH];
