@@ -16,7 +16,7 @@ This is a collection of socket programming implementations in C. The implementat
 
 ### Utilities
 
-- [Hostname to IP address](src/ip/getip.c)
+- [Hostname to IP address](src/utils/showip.c)
 
 ## References
 
