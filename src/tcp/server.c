@@ -128,7 +128,13 @@ int main(int argc, char **argv) {
         printf("got connection from %s port %d\n", from_addr_ip,
                from_addr_port);
 
-        if (!fork()) {
+        pid_t child_pid = fork();
+        if (child_pid == -1) {
+            perror("failed to create child process");
+            close(connection);
+            continue;
+        }
+        if (child_pid == 0) {
             close(s);
 
             char buffer[BUFFER_LENGTH];
