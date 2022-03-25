@@ -38,7 +38,7 @@ in_port_t get_in_port(const struct sockaddr *addr) {
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s <port>\n", argv[0]);
+        fprintf(stderr, "usage: %s <port>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 

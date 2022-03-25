@@ -16,7 +16,7 @@ const void *get_in_addr(const struct sockaddr *addr) {
 
 int main(int argc, char **argv) {
     if (argc != 4) {
-        fprintf(stderr, "Usage: %s <hostname> <port> <message>\n", argv[0]);
+        fprintf(stderr, "usage: %s <hostname> <port> <message>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
